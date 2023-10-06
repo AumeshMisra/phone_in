@@ -28,6 +28,7 @@ class CustomEventsManager(events_manager.EventsManager):
             custom_parser = CustomParser(
                 transcript_complete_event.transcript.event_logs)
             result = await custom_parser.parseMessages()
+            print(result)
             # go thourgh persisting data to DB
             # go through messaging back phone
             phone_messenger = PhoneMessenger()

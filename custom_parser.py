@@ -42,4 +42,4 @@ class CustomParser:
             intake_response.choices[0].message.content)
         converted_json_appointment = json.loads(
             appointment_response.choices[0].message.content)
-        return ({'json_intake': converted_json_intake, 'json_appointment': converted_json_appointment})
+        return {'json_intake': converted_json_intake, 'json_appointment': converted_json_appointment}
