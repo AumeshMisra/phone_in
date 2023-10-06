@@ -10,13 +10,15 @@ logger.setLevel(logging.DEBUG)
 
 class PhoneMessenger:
     def __init__(self):
-        account_sid = os.environ["TWILIO_ACCOUNT_SID"],
-        auth_token = os.environ["TWILIO_AUTH_TOKEN"],
+        account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+        auth_token = os.environ["TWILIO_AUTH_TOKEN"]
         self.client = Client(account_sid, auth_token)
 
     async def sendMessageToNumber(self, json_appointment):
+        print(json_appointment)
         message = self.client.messages.create(
             body=f"Scheduled appointment with {json_appointment.appointmentDoctor} at {json_appointment.appointmentTime}",
+            messaging_service_sid=os.environ["TWILIO_MESSAGING_SID"],
             to=f"{json_appointment.phoneNumber}"
         )
         return message
