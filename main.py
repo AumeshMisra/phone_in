@@ -1,35 +1,38 @@
-import logging
-import os
-import asyncio
-from fastapi import FastAPI
-from vocode.streaming.models.telephony import TwilioConfig
-from pyngrok import ngrok
-from vocode.streaming.telephony.config_manager.redis_config_manager import (
-    RedisConfigManager,
+from dotenv import load_dotenv
+import sys
+from phone_messenger import PhoneMessenger
+from custom_parser import CustomParsedAppointmentMessage
+from custom_event_manager import CustomEventsManager
+from custom_agent_factory import CustomAgentFactory
+from vocode.streaming.client_backend.conversation import TranscriptEventManager
+from vocode.streaming.synthesizer.eleven_labs_synthesizer import (
+    ElevenLabsSynthesizerConfig,
 )
-from vocode.streaming.models.agent import ChatGPTAgentConfig
-from vocode.streaming.models.message import BaseMessage
 from vocode.streaming.telephony.server.base import (
     TwilioInboundCallConfig,
     TelephonyServer,
 )
-from vocode.streaming.synthesizer.eleven_labs_synthesizer import (
-    ElevenLabsSynthesizerConfig,
+from vocode.streaming.models.message import BaseMessage
+from vocode.streaming.models.agent import ChatGPTAgentConfig
+from vocode.streaming.telephony.config_manager.redis_config_manager import (
+    RedisConfigManager,
 )
-from vocode.streaming.client_backend.conversation import TranscriptEventManager
+from pyngrok import ngrok
+from vocode.streaming.models.telephony import TwilioConfig
+from fastapi import FastAPI
+import asyncio
+import os
+import logging
+from models.database_start import engine
+import models.models
+import models.database_start
+from repos.intake import IntakeDetails, IntakeORM
+load_dotenv()
 
-from custom_agent_factory import CustomAgentFactory
-from custom_event_manager import CustomEventsManager
-from custom_parser import CustomParsedAppointmentMessage
-from phone_messenger import PhoneMessenger
-from datetime import datetime
-import sys
 
 # if running from python, this will load the local .env
 # docker-compose will load the .env file by itself
-from dotenv import load_dotenv
 
-load_dotenv()
 
 app = FastAPI(docs_url=None)
 
@@ -57,8 +60,27 @@ if not BASE_URL:
     raise ValueError(
         "BASE_URL must be set in environment if not using pyngrok")
 
+models.database_start.Base.metadata.create_all(bind=engine)
 
-# Test endpoint to see if endpoint can be reached
+
+# Testing adding an intake
+@app.post("/intake")
+async def addIntake(result: IntakeDetails):
+    orm: IntakeORM = IntakeORM()
+    await orm.insertIntakeDetails(result)
+
+# Testing fetching all intakes
+
+
+@app.get("/intake")
+async def addIntake():
+    orm: IntakeORM = IntakeORM()
+    results = await orm.fetchAll()
+    return results
+
+# Testing health
+
+
 @app.get("/health")
 async def health():
     return "healthy!"

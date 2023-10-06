@@ -19,5 +19,7 @@ COPY custom_agent_factory.py /code/custom_agent_factory.py
 COPY custom_parser.py /code/custom_parser.py
 COPY custom_event_manager.py /code/custom_event_manager.py
 COPY phone_messenger.py /code/phone_messenger.py
+COPY repos/. /code/repos/.
+COPY modes/. /code/models/.
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000"]

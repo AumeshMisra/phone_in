@@ -5,20 +5,11 @@ import openai
 from typing import List, Optional
 from pydantic import BaseModel
 from vocode.streaming.models.transcript import EventLog
+from repos.intake import IntakeDetails
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-
-class CustomParsedIntakeDetails(BaseModel):
-    name: Optional[str]
-    dob: Optional[datetime]
-    reasonForVisit: Optional[str]
-    phoneNumber: Optional[int]
-    insuranceProvider: Optional[str]
-    insuranceId: Optional[int]
-    referringDoctor: Optional[str]
 
 
 class CustomParsedAppointmentMessage(BaseModel):
@@ -66,7 +57,7 @@ class CustomParser:
         converted_json_appointment = json.loads(
             appointment_response.choices[0].message.content)
         print(converted_json_appointment, converted_json_intake)
-        parsed_intake: CustomParsedIntakeDetails = CustomParsedIntakeDetails(
+        parsed_intake: IntakeDetails = IntakeDetails(
             **converted_json_intake)
         parsed_apointment: CustomParsedAppointmentMessage = CustomParsedAppointmentMessage(
             **converted_json_appointment)

@@ -7,6 +7,7 @@ from vocode.streaming.models.events import Event, EventType
 from vocode.streaming.utils import events_manager
 from phone_messenger import PhoneMessenger
 from custom_parser import CustomParser, CustomParsedAppointmentMessage
+from repos.intake import IntakeORM
 
 app = FastAPI(docs_url=None)
 
@@ -30,7 +31,12 @@ class CustomEventsManager(events_manager.EventsManager):
             custom_parser = CustomParser(
                 transcript_complete_event.transcript.event_logs)
             result = await custom_parser.parseMessages()
+
+            # Persist in DB
+            intakeORM = IntakeORM()
+            await intakeORM.insertIntakeDetails(result['json_intake'])
+
+            # send SMS
             appointmentMessage: CustomParsedAppointmentMessage = result['json_appointment']
-            # TODO: persist in DB
             phone_messenger = PhoneMessenger()
             await phone_messenger.sendMessageToNumber(appointmentMessage)

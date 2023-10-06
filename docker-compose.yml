@@ -1,4 +1,15 @@
 services:
+  db:
+    container_name: postgres_python
+    image: postgres:16.0
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - data:/data/db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
   redis:
     image: redis:7.0.9-alpine
     command: redis-server --bind 0.0.0.0
@@ -12,5 +23,9 @@ services:
       - 3000:3000
     depends_on:
       - redis
+      - db
     environment:
       - REDISHOST=redis
+
+volumes:
+  data:
