@@ -6,10 +6,15 @@ A phone bot that does medical intake and schedules an appointment
 
 1. brew install poetry
 2. brew install ffpeg
+3. brew install portaudio
+4. brew install ngrok
 
 # How to run
 
 1. Clone the repo
-2. run poetry install
-3. In one terminal, run ngrok http 3000
-4. In another terminal run, poetry run uvicorn main:app --port 3000
+2. Get all the appropriate api keys in your .env file
+3. run ```poetry install```
+4. In one terminal, run ```ngrok http 3000```
+5. Copy the url from ngrok and paste into both twilio and BASE_URL in your .env file
+6. In another terminal run, poetry run ```uvicorn main:app --port 3000```
+7. Call your twilio number
