@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
+# An event manager that process a message, parses a message,
+# and sends appointment details to a phone number
 class CustomEventsManager(events_manager.EventsManager):
     def __init__(self):
         super().__init__(subscriptions=[
@@ -29,9 +31,6 @@ class CustomEventsManager(events_manager.EventsManager):
                 transcript_complete_event.transcript.event_logs)
             result = await custom_parser.parseMessages()
             appointmentMessage: CustomParsedAppointmentMessage = result['json_appointment']
-            print(appointmentMessage)
-            # go thourgh persisting data to DB
-            # go through messaging back phone
-            # {'json_intake': {'name': 'Aumesh', 'DOB': '1998-10-02', 'reasonForVisit': 'Broken Neck', 'phoneNumber': 4085945927, 'referringDoctor': 'Doctor Shai', 'insuranceProvider': 'Aetna', 'insuranceId': '111'}, 'json_appointment': {'phoneNumber': 4085945927, 'name': 'Aumesh', 'appointmentDoctor': 'Dr. Michael Johnson', 'appointmentTime': 'Friday at 2 PM'}}
+            # TODO: persist in DB
             phone_messenger = PhoneMessenger()
-            phone_messenger.sendMessageToNumber(appointmentMessage)
+            await phone_messenger.sendMessageToNumber(appointmentMessage)

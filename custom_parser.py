@@ -1,8 +1,8 @@
 import json
 import logging
-import datetime
+from datetime import datetime
 import openai
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from vocode.streaming.models.transcript import EventLog
 
@@ -12,20 +12,20 @@ logger.setLevel(logging.DEBUG)
 
 
 class CustomParsedIntakeDetails(BaseModel):
-    name: str
-    dob: datetime
-    reasonForVisit: str
-    phoneNumber: int
-    insuranceProvider: str
-    insuranceId: int
-    referringDoctor: str
+    name: Optional[str]
+    dob: Optional[datetime]
+    reasonForVisit: Optional[str]
+    phoneNumber: Optional[int]
+    insuranceProvider: Optional[str]
+    insuranceId: Optional[int]
+    referringDoctor: Optional[str]
 
 
 class CustomParsedAppointmentMessage(BaseModel):
-    phoneNumber: int
-    name: str
-    appointmentDoctor: str
-    appointmentTime: datetime
+    phoneNumber: Optional[int]
+    name: Optional[str]
+    appointmentDoctor: Optional[str]
+    appointmentTime: Optional[datetime]
 
 
 class CustomParser:
@@ -61,15 +61,17 @@ class CustomParser:
             ],
             temperature=0,
         )
-        converted_json_intake: CustomParsedIntakeDetails = CustomParsedIntakeDetails(
-            json.loads(intake_response.choices[0].message.content)
-        )
-        converted_json_appointment: CustomParsedAppointmentMessage = (
-            CustomParsedAppointmentMessage(
-                json.loads(appointment_response.choices[0].message.content)
-            )
-        )
+        converted_json_intake = json.loads(
+            intake_response.choices[0].message.content)
+        converted_json_appointment = json.loads(
+            appointment_response.choices[0].message.content)
+        print(converted_json_appointment, converted_json_intake)
+        parsed_intake: CustomParsedIntakeDetails = CustomParsedIntakeDetails(
+            **converted_json_intake)
+        parsed_apointment: CustomParsedAppointmentMessage = CustomParsedAppointmentMessage(
+            **converted_json_appointment)
+
         return {
-            "json_intake": converted_json_intake,
-            "json_appointment": converted_json_appointment,
+            "json_intake": parsed_intake,
+            "json_appointment": parsed_apointment,
         }

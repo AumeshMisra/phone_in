@@ -58,11 +58,13 @@ if not BASE_URL:
         "BASE_URL must be set in environment if not using pyngrok")
 
 
+# Test endpoint to see if endpoint can be reached
 @app.get("/health")
 async def health():
     return "healthy!"
 
 
+# Test endpoint to check phone number
 @app.post("/phoneMessage")
 async def phoneMessage(result: CustomParsedAppointmentMessage):
     phone_messenger = PhoneMessenger()
@@ -80,7 +82,7 @@ telephony_server = TelephonyServer(
                 initial_message=BaseMessage(
                     text="Hi, I am here to do a medical intake and learn more about your reason for calling, can you please spell your name?"
                 ),
-                prompt_preamble="Conduct a medical intake. There are 7 things you must do in this order and if you do not get a clear answer ask again: 1. Collect patient's name and DOB. 2. The insurance payer 3. insurance ID. 4. If they have a referral and to who. 5. Collect chief medical complaint. 6. Address/ Location 7. Collect contact info (only phone number necessary). After collecting their info, recommend 2 doctors, each with only one time for them. After they confirm an appointment time, say goodbye and please end the call",
+                prompt_preamble="Conduct a medical intake. There are 7 things you must do in this order and if you do not get a clear answer ask again: 1. Collect patient's name and DOB. 2. The insurance payer 3. insurance ID. 4. If they have a referral and to who. 5. Collect chief medical complaint. 6. Address/ Location 7. Collect phone number (make sure it is a valid phone number). After collecting their info, recommend 2 doctors, each with only one time for them. After they confirm an appointment time, say goodbye and please end the call",
                 generate_responses=True,
                 end_conversation_on_goodbye=True,
             ),
