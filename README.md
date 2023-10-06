@@ -16,5 +16,5 @@ A phone bot that does medical intake and schedules an appointment
 3. run ```poetry install```
 4. In one terminal, run ```ngrok http 3000```
 5. Copy the url from ngrok and paste into both twilio and BASE_URL in your .env file
-6. In another terminal run, poetry run ```uvicorn main:app --port 3000```
+6. In another terminal run, ```poetry run uvicorn main:app --port 3000```
 7. Call your twilio number
