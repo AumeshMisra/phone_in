@@ -22,7 +22,7 @@ class CustomParser:
     def __init__(self, messages: List[EventLog]):
         self.messages: List[EventLog] = messages
 
-    def parseMessages(self):
+    async def parseMessages(self):
         intake_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=[
@@ -42,8 +42,4 @@ class CustomParser:
             intake_response.choices[0].message.content)
         converted_json_appointment = json.loads(
             appointment_response.choices[0].message.content)
-        # parsedAppointmentMessage = CustomParsedAppointmentMessage(
-        #     **converted_json_intake)
-
-        print(converted_json_intake,
-              converted_json_appointment)
+        return ({'json_intake': converted_json_intake, 'json_appointment': converted_json_appointment})

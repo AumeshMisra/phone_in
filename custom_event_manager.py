@@ -5,7 +5,7 @@ from vocode.streaming.models.events import Event, EventType
 from vocode.streaming.models.transcript import TranscriptCompleteEvent
 from vocode.streaming.models.events import Event, EventType
 from vocode.streaming.utils import events_manager
-
+from phone_messenger import PhoneMessenger
 from custom_parser import CustomParser
 
 app = FastAPI(docs_url=None)
@@ -27,4 +27,8 @@ class CustomEventsManager(events_manager.EventsManager):
             # Handle processing the transcript
             custom_parser = CustomParser(
                 transcript_complete_event.transcript.event_logs)
-            custom_parser.parseMessages()
+            result = await custom_parser.parseMessages()
+            # go thourgh persisting data to DB
+            # go through messaging back phone
+            phone_messenger = PhoneMessenger()
+            phone_messenger.sendMessageToNumber(result.json_appointment)
