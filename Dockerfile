@@ -22,4 +22,4 @@ COPY phone_messenger.py /code/phone_messenger.py
 COPY repos/. /code/repos/.
 COPY models/. /code/models/.
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
